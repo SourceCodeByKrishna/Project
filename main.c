@@ -11,6 +11,8 @@ void UpdateProduct();
 void DisplayProduct();
 void DeleteProduct();
 void Sale();
+void MakeSale();
+void SaleDisplay();
 void ProductReport();
 void SalesReport();
 void main()
@@ -176,8 +178,24 @@ void DeleteProduct()
 //Sales
 void Sale()
 {
+	int Option = SaleOptions();
+	switch(Option)
+	{
+		case 1: MakeSale();
+		break;
+		case 2: SaleDisplay();
+		break;
+	}
+	
+}
+
+int SaleOptions()
+{
+	int Options;
 	printf("\n 1. Make sale");
 	printf("\n 2. Display");
+	scanf("%d", &Options);
+	return Options;
 }
 
 //MakeSale
