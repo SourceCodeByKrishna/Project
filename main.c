@@ -4,6 +4,15 @@ void Register();
 int Login();
 void Menu();
 int MenuDisplay();
+void Product();
+int ProductDisplay();
+void AddProduct();
+void UpdateProduct();
+void DisplayProduct();
+void DeleteProduct();
+void Sale();
+void ProductReport();
+void SalesReport();
 void main()
 {
 	Display();
@@ -72,18 +81,19 @@ int Login()
 //Menu
 void Menu()
 {
-	int Option= MenuDisplay();
+	int Option = 1;
 	while(Option!=0)
 	{
+		Option = MenuDisplay();
 		switch(Option)
 		{
-			case 1:
+			case 1: Product();
 			break;
-			case 2:
+			case 2: Sale();
 			break;
-			case 3:
+			case 3: ProductReport();
 			break;
-			case 4:
+			case 4: SalesReport();
 			break;
 		}
 	}
@@ -106,10 +116,28 @@ int MenuDisplay()
 //Product
 void Product()
 {
+	int Option = ProductDisplay();
+	switch(Option)
+	{
+		case 1: AddProduct();
+		break;
+		case 2: UpdateProduct();
+		break;
+		case 3: DisplayProduct();
+		break;
+		case 4: DeleteProduct();
+		break;
+	}
+}
+
+int ProductDisplay()
+{
+	int Option;
 	printf("\n 1. Add a product");
 	printf("\n 2. Update a product");
 	printf("\n 3. Display the Product");
 	printf("\n 4. Delete a product");
+	scanf("%d",&Option);
 }
 
 //Add Product
@@ -163,4 +191,14 @@ void MakeSale()
 void SaleDisplay()
 {
 	printf("\n Disply Sales");
+}
+
+void ProductReport()
+{
+	printf("\n Product Report");
+}
+
+void SalesReport()
+{
+	printf("\n Sales Report");
 }
