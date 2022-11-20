@@ -1,4 +1,14 @@
 #include<stdio.h>
+#include<malloc.h>
+struct Products
+{
+	int ID;
+	char *Name;
+	char *Description;
+	int Quantity;
+	struct Products *Next;
+};
+
 void Display();
 void Register();
 int Login();
@@ -8,16 +18,23 @@ void Product();
 int ProductDisplay();
 void AddProduct();
 void UpdateProduct();
-void DisplayProduct();
+void DisplayProducts(struct Products* P);
 void DeleteProduct();
 void Sale();
 void MakeSale();
 void SaleDisplay();
 void ProductReport();
 void SalesReport();
+struct Products* NewData(int , char* , char* , int);
+void SaveToProductFile(struct Products* P);
+void LoadProductFile();
+
 void main()
 {
-	Display();
+	
+//	AddProduct();
+	LoadProductFile();
+//	Display();
 	return;
 }
 
@@ -32,6 +49,8 @@ void Display()
 		printf("\n Do you want to");
 		printf("\n \t 1. Register");
 		printf("\n \t 2. Login");
+		scanf("%d",&Option);
+		Exit = Option;
 		switch(Option)
 		{
 			case 1:
@@ -121,11 +140,11 @@ void Product()
 	int Option = ProductDisplay();
 	switch(Option)
 	{
-		case 1: AddProduct();
+		case 1: //AddProduct();
 		break;
 		case 2: UpdateProduct();
 		break;
-		case 3: DisplayProduct();
+		case 3: //DisplayProducts();
 		break;
 		case 4: DeleteProduct();
 		break;
@@ -145,10 +164,30 @@ int ProductDisplay()
 //Add Product
 void AddProduct()
 {
+	int ID, Quantity;
+	char NAME[50], Description[50];
 	printf("\n Enter product ID:");
+	scanf("%d",&ID);
 	printf("\n Enter new name:");
+	scanf("%s",NAME);
 	printf("\n Enter description:");
+	scanf("%s",Description);
 	printf("\n Enter Quantity:");
+	scanf("%s",&Quantity);
+	struct Products *P = NewData(ID,NAME,Description,Quantity);
+	SaveToProductFile(P);
+	DisplayProducts(P);
+}
+
+struct Products* NewData(int ID, char* NAME, char* Description, int Quantity)
+{
+	struct Products* P = (struct Products*)malloc(sizeof(struct Products));
+	P->ID=ID;
+	P->Name=NAME;
+	P->Description=Description;
+	P->Quantity=Quantity;
+	P->Next=NULL;
+	return P;
 }
 
 //Update Product
@@ -161,9 +200,15 @@ void UpdateProduct()
 }
 
 //Display Product
-void DisplayProduct()
+void DisplayProducts(struct Products* P)
 {
-	printf("\n Display Product");
+	while(P!=NULL)
+	{
+		printf("\n %d",P->ID);
+		printf("\n %s",P->Name);
+		P=P->Next;
+	}
+	
 }
 
 //Delete Product
@@ -219,4 +264,34 @@ void ProductReport()
 void SalesReport()
 {
 	printf("\n Sales Report");
+}
+
+
+
+//FILES
+void SaveToProductFile(struct Products* P)
+{
+  int ID;
+  char NAME[50];
+  FILE *W = fopen("Products.txt","w");
+  
+  while(P!=NULL)
+	{
+		fprintf(W,"%d %s %s %d",P->ID, P->Name, P->Description, P->Quantity); 
+		P=P->Next;
+	}
+  
+  fclose(W);
+}
+
+void LoadProductFile()
+{
+	int ID, Quantity;
+	char Name[50], Description[50];
+	
+	FILE *R = fopen("Products.txt","r");
+	fscanf(R,"%d %s %s %d",ID,Name,Description,Quantity);
+	
+	printf("\n %d %s %s %d",ID,Name,Description,Quantity);
+	fclose(R);
 }
