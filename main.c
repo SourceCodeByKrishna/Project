@@ -290,8 +290,10 @@ void LoadProductFile()
 	char Name[50], Description[50];
 	
 	FILE *R = fopen("Products.txt","r");
-	fscanf(R,"%d %s %s %d",ID,Name,Description,Quantity);
+	while(fscanf(R,"%d %s %s %d",&ID,Name,Description,&Quantity)!=EOF)
+	{
+		printf("\n %d %s %s %d",ID,Name,Description,Quantity);
+	}
 	
-	printf("\n %d %s %s %d",ID,Name,Description,Quantity);
 	fclose(R);
 }
