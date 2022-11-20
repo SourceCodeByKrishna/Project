@@ -309,7 +309,7 @@ void LoadProductFile()
 		    {
 		    Head=Head->Next;
 		    }
-		    Head = P;
+		    Head->Next = P;
 		}
 	
 	}
