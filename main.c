@@ -288,12 +288,37 @@ void LoadProductFile()
 {
 	int ID, Quantity;
 	char Name[50], Description[50];
-	
+	struct Products* Head;
 	FILE *R = fopen("Products.txt","r");
 	while(fscanf(R,"%d %s %s %d",&ID,Name,Description,&Quantity)!=EOF)
 	{
-		printf("\n %d %s %s %d",ID,Name,Description,Quantity);
+		//printf("\n %d %s %s %d",ID,Name,Description,Quantity);
+		struct Products* P = (struct Products*)malloc(sizeof(struct Products));
+		P->ID=ID;
+		P->Name=Name;
+		P->Description=Description;
+		P->Quantity=Quantity;
+		P->Next=NULL;
+		if(Head==NULL)
+		{
+		Head = P;
+		}
+		else
+		{
+		    while(Head->Next!=NULL)
+		    {
+		    Head=Head->Next;
+		    }
+		    Head = P;
+		}
+	
 	}
+	while(Head!=NULL)
+	{
+	printf("%d %s",Head->ID, Head->Name);
+	Head=Head->Next;
+	}
+	
 	
 	fclose(R);
 }
