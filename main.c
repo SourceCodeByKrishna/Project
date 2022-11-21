@@ -200,7 +200,7 @@ void AddProduct()
 		  }
 		  Temp->Next=D;
 		}	
-	ShowProducts();
+	printf("\n Successfully Product Added \n");
 }
 
 //Update Product
