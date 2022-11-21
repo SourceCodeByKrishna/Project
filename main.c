@@ -10,16 +10,16 @@ struct Products
 	struct Products *Next;
 };
 struct Products *Head;
-void Display();
+void Options();
 void Register();
 int Login();
 void Menu();
-int MenuDisplay();
+int MenuOptions();
 void Product();
-int ProductDisplay();
+int ProductOptions();
 void AddProduct();
 void UpdateProduct();
-void DisplayProducts();
+void ShowProducts();
 void DeleteProduct();
 void Sale();
 void MakeSale();
@@ -33,17 +33,12 @@ void main()
 {
 	
 	LoadProductFile();
-  DisplayProducts();
-  DeleteProduct();
-  UpdateProductFile();
-  DisplayProducts();
-	//AddProduct();
-	
-//	Display();
+	Options();
+	UpdateProductFile();
 	return;
 }
 
-void Display()
+void Options()
 {
 	int Exit = 1;
 	int Option;
@@ -101,7 +96,7 @@ int Login()
 	scanf("%d",&ID);
 	printf("\n Enter Your Password");
 	scanf("%d", &PASSWORD);
-	return 0;
+	return 1;
 }
 
 //Menu
@@ -110,7 +105,7 @@ void Menu()
 	int Option = 1;
 	while(Option!=0)
 	{
-		Option = MenuDisplay();
+		Option = MenuOptions();
 		switch(Option)
 		{
 			case 1: Product();
@@ -127,11 +122,12 @@ void Menu()
 }
 
 //Menu Display
-int MenuDisplay()
+int MenuOptions()
 {
 	int Option;
-	printf("\n 1. Add Product");
-	printf("\n 2. Add Sale");
+	printf("\n ###########INVENTORY CONTROL###########");
+	printf("\n 1. Product");
+	printf("\n 2. Sale");
 	printf("\n 3. Get the Sale Report");
 	printf("\n 4. Get the Product Report");
 	printf("\n 0. Exit");
@@ -139,31 +135,36 @@ int MenuDisplay()
 	return Option;	
 }
 
+/* #########Product Section########## */
+
 //Product
 void Product()
 {
-	int Option = ProductDisplay();
+	int Option = ProductOptions();
 	switch(Option)
 	{
-		case 1: //AddProduct();
+		case 1: AddProduct();
 		break;
 		case 2: UpdateProduct();
 		break;
-		case 3: //DisplayProducts();
+		case 3: ShowProducts();
 		break;
 		case 4: DeleteProduct();
 		break;
 	}
 }
 
-int ProductDisplay()
+//Product Options
+int ProductOptions()
 {
 	int Option;
+	printf("\n ###########PRODUCT OPTIONS###########");
 	printf("\n 1. Add a product");
 	printf("\n 2. Update a product");
 	printf("\n 3. Display the Product");
 	printf("\n 4. Delete a product");
 	scanf("%d",&Option);
+	return Option;
 }
 
 //Add Product
@@ -171,6 +172,7 @@ void AddProduct()
 {
 	int ID, Quantity;
 	char Name[50], Description[50];
+	printf("\n#########ADD PRODUCT#############");
 	printf("\n Enter product ID:");
 	scanf("%d",&ID);
 	printf("\n Enter new name:");
@@ -201,7 +203,7 @@ void AddProduct()
 		  }
 		  Temp->Next=D;
 		}	
-	DisplayProducts();
+	ShowProducts();
 }
 
 //Update Product
@@ -213,8 +215,8 @@ void UpdateProduct()
 	printf("\n Enter Quantity:");
 }
 
-//Display Product
-void DisplayProducts()
+//Show Product
+void ShowProducts()
 {
 	if(Head==NULL)
 	 {
@@ -240,6 +242,7 @@ void DisplayProducts()
 void DeleteProduct()
 {
 	int ID;
+	printf("\n ############DELETE PRODUCT##############");
 	printf("\n Enter the ID of product you want to delete:");
 	scanf("\n%d",&ID);
 	if(Head==NULL)
@@ -283,7 +286,7 @@ void DeleteProduct()
 	
 }
 
-//Sales Part
+/* #########SALES SECTION############ */
 
 //Sales
 void Sale()
