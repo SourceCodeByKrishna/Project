@@ -14,23 +14,27 @@ struct Products
 struct Sales
 {
 	int  SaleID;
-	int  Quantity;
+	int  NoItems;
+	char DateTime[25];
+	char Cart[20][10];
 	struct Sales *Next;
 };
 struct Products *Head;
 struct Sales *SalesHead;
+
 void Options();
 void Register();
-int Login();
+int  Login();
 void Menu();
-int MenuOptions();
+int  MenuOptions();
 void Product();
-int ProductOptions();
+int  ProductOptions();
 void AddProduct();
 void UpdateProduct();
 void ShowProducts();
 void DeleteProduct();
 void Sale();
+int  SaleOptions();
 void MakeSale();
 void SaleDisplay();
 void ProductReport();
@@ -38,7 +42,9 @@ void SalesReport();
 void UpdateProductFile();
 void LoadProductFile();
 void UpdateSalesFile();
+void EffectProducts(int, int);
 char *JoinStrings(char [],char []);
+char *GetTime();
 
 void main()
 {
@@ -326,8 +332,8 @@ void DeleteProduct()
 //Sales
 void Sale()
 {
-	//int Option = SaleOptions();
-	switch(1)
+	int Option = SaleOptions();
+	switch(Option)
 	{
 		case 1: MakeSale();
 		break;
@@ -349,68 +355,140 @@ int SaleOptions()
 //MakeSale
 void MakeSale()
 {
-	int ID, Quantity;
-	//time_t t = time(NULL);
-  //struct tm tm = *localtime(&t);
-  //printf("Date and time: %d-%02d-%02d %02d:%02d:%02d\n",tm.tm_mday, tm.tm_mon + 1,tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec);
+ 	int ID, Quantity;
+ 	int Exit=0;
+ 	char Cart[10][20];
+ 	int count = 0;
+ 	int NoSales=0;
+ 	do
+ 	{
 	printf("\n Enter Product ID:");
-	scanf("%d",&ID);
-	printf("\n Enter Quantity:");
+        scanf("%d",&ID);
+        printf("\n Enter Quantity:");
 	scanf("%d",&Quantity);
+	EffectProducts(ID,Quantity);
+	NoSales++;
+	char StrQuant[10];
+	char StrID[10];
+	sprintf(StrID, "%d", ID);//Converts int to String
+	sprintf(StrQuant, "%d", Quantity);//Converts int to String
+	char *NewString;
+	NewString = JoinStrings(StrID,StrQuant);//Joing Strings with < , >
+	char String[50];
+	strcpy(String, NewString); //Copies pointer value to string
+	printf("%s",String);
+	int i=0;
+	while(String[i]!='\0')
+	{
+	 Cart[count][i]=String[i];
+	 i++;
+	}
+	Cart[count][i]='\0'; // '\0' Denotes ending of individual String
+	count++; 
+	printf("\n Enter 1 to c \n");
+	scanf("%d",&Exit);
+	}while(Exit!=0);
 	
-	if(Head==NULL)
+	
+	//printing Cart Data
+	int j=0;
+	while(j<count)
+	{
+	  printf("%s",Cart[j]);
+	  j++;
+	}
+	
+	
+	//Save to Sales Linked List
+	int i=0;
+	char *DT = GetTime();
+	char DATETIME[25];
+	strcpy(DATETIME,DT);
+	
+	struct Sales *SalesNode = (struct Sales*)malloc(sizeof(struct Sales));
+	
+	SalesNode->SaleID = ID *10;
+	SalesNode->NoItems = NoSales;
+	strcpy(SalesNode->DateTime,DATETIME);
+	
+
+	while(i<count)
+	{
+	  strcpy(SalesNode->Cart[i],Cart[i]);
+	  i++;
+	}
+	
+	if(SalesHead==NULL)
+	{
+         SalesHead=SalesNode;
+	}
+	else
+	{
+	 struct Sales *SalesTemp;
+	 SalesTemp = SalesHead;
+	 while(SalesTemp->Next!=NULL)
+         {
+          SalesTemp=SalesTemp->Next;
+         }
+	  SalesTemp->Next=SalesNode;
+	}
+	
+	return;
+}
+
+void EffectProducts(int ID, int Quantity)
+{
+   struct Products *Temp;
+		Temp = Head;
+		  while(Temp!= NULL)
+		 {
+		 		if(Temp->ID==ID)
+		 		{
+		 			if(Quantity!=0)
+		 			{
+		 			Temp->Quantity = Temp->Quantity - Quantity;
+		 			}
+		 			
+		 		}
+		    Temp=Temp->Next;
+		 }
+		 return;
+}
+
+
+
+
+
+
+
+//Display
+void SaleDisplay()
+{
+	
+	if(SalesHead==NULL)
 	 {
 	 printf("\n Empty");
 	 }
 	 else
 	 {
-	  struct Products *Temp;
-	  Temp = Head;
-	   while(Temp!= NULL)
+	  struct Sales *SalesTemp;
+	  SalesTemp = SalesHead;
+	   while(SalesTemp!=NULL)
 	   {
-		 struct Sales *SalesTemp;
-		 SalesTemp = SalesHead;
-		 if(Temp->ID==ID)
-		 {
-		   Temp->Quantity=Temp->Quantity - Quantity; //Decrement The Quantity
-		   struct Sales *D = (struct Sales*)malloc(sizeof(struct Sales));
-		   D->SaleID= ID*10; //Sale ID
-		   D->Quantity= Quantity; //Sale Quantity
-		   char StrQuant[10];
-		   char StrID[10];
-		   sprintf(StrID, "%d", ID);//Converts int to String
-		   sprintf(StrQuant, "%d", Quantity);//Converts int to String
-		   char *NewString;
-		   //strcpy(Order,StrQuant);
-		   NewString = JoinStrings(StrID,StrQuant);//Joing Strings with < , >
-		   char String[50];
-		   strcpy(String, NewString);
-		   printf("\n New String: %s", String);
-		   D->Next=NULL;
-			if(SalesHead==NULL)
-			{
-			 SalesHead = D;		 				
-			}
-			else
-			{
-			  while(SalesTemp!=NULL)
-			  {
-				SalesTemp = SalesTemp->Next;
-			  }
-		          SalesTemp->Next= D;
-			}
-		 			
-		 }
-		    Temp=Temp->Next;
-	    }
-	 }
-	
-}
+	   printf("%d\n %s",SalesTemp->SaleID, SalesTemp->DateTime);
 
-//Display
-void SaleDisplay()
-{
-	printf("\n Disply Sales");
+	   int i=0;
+	   while(i<SalesTemp->NoItems)
+	   {
+	   printf("\n %s", SalesTemp->Cart[i]);
+	   i++;
+	   }
+	   
+	   SalesTemp=SalesTemp->Next;
+	   }
+	 }
+	 
+  return;
 }
 
 void ProductReport()
@@ -488,24 +566,33 @@ void LoadProductFile()
 //Update Sales File
 void UpdateSalesFile()
 {
-	FILE *W = fopen("Sales.txt","w");
+	FILE *A = fopen("Sales.txt","a");
 	if(SalesHead==NULL)
 	 {
 	 printf("\n Empty");
 	 }
 	 else
 	 {
-	  struct Sales *Temp;
-	  Temp = SalesHead;
-	   while(Temp!=NULL)
+	  struct Sales *SalesTemp;
+	  SalesTemp = SalesHead;
+	   while(SalesTemp!=NULL)
 	   {
-		 fprintf(W,"%d %d\n",Temp->SaleID,Temp->Quantity); 
-	         Temp=Temp->Next;
+	   fprintf(A,"%d\t %s",SalesTemp->SaleID, SalesTemp->DateTime);
+	   int i=0;
+	   	while(i<SalesTemp->NoItems)
+	   	{
+	   	fprintf(A,"%s  ",SalesTemp->Cart[i]);
+	   	i++;
+	   	}
+	   	fprintf(A,"\n");
+	         SalesTemp=SalesTemp->Next;
 	   }
 	 }
-	fclose(W);
+	fclose(A);
 }
 
+
+//Join Strings like <ID, Quantity>
 char *JoinStrings(char String1[15],char String2[15])
 {
 	int i=0,j=1;
@@ -532,3 +619,109 @@ char *JoinStrings(char String1[15],char String2[15])
 	STR[j] = '\0';
 	return STR;
 }
+
+char* GetTime()
+{
+	int point=0,count=0;
+	time_t t = time(NULL);
+  struct tm tm = *localtime(&t);
+  char *DateTime =  (char *)malloc(sizeof(25));
+  char Day[3];
+  char Month[3];
+  char Year[5];
+  char Hour[3];
+  char Minute[3];
+  char Seconds[3];
+  char Date[15]; //Date like 22-11-2022
+  char Time[15]; //Time like 15:20:60
+  sprintf(Day, "%d", tm.tm_mday);
+  sprintf(Month, "%02d",tm.tm_mon + 1);
+  sprintf(Year, "%02d",tm.tm_year + 1900);
+  sprintf(Hour, "%02d",tm.tm_hour);
+  sprintf(Minute, "%02d",tm.tm_min);
+  sprintf(Seconds, "%02d",tm.tm_sec);
+  
+  //Join Date with '-'
+  while(Day[count]!='\0')
+  {
+  Date[point]= Day[count];
+  point++;
+  count++;
+  }
+  Date[point]='-';
+  point++;
+  count=0;
+  while(Month[count]!='\0')
+  {
+  Date[point]= Month[count];
+  point++;
+  count++;
+  }
+  Date[point]='-';
+  point++;
+  count=0;
+  while(Year[count]!='\0')
+  {
+  Date[point]= Year[count];
+  point++;
+  count++;
+  }
+  Date[point]='\0';
+ 
+  
+  //Joins Time with ':'
+  point=0;
+  count=0;
+  while(Hour[count]!='\0')
+  {
+  Time[point] = Hour[count];
+  point++;
+  count++;
+  }
+  Time[point]=':';
+  point++;
+  count=0;
+  while(Minute[count]!='\0')
+  {
+  Time[point]=Minute[count];
+  point++;
+  count++;
+  }
+  count=0;
+  Time[point]=':';
+  point++;
+  while(Seconds[count]!='\0')
+  {
+  Time[point]=Seconds[count];
+  point++;
+  count++;
+  }
+  Time[point]='\0';
+  
+  point=0;
+  count=0;
+  while(Date[count]!='\0')
+  {
+  DateTime[point]=Date[count];
+  point++;
+  count++;
+  }
+  DateTime[point]=' ';
+  point++;
+  
+  count=0;
+  while(Time[count]!='\0')
+  {
+  DateTime[point]=Time[count];
+  point++;
+  count++;
+  }
+  DateTime[point]='\0';
+  
+  return DateTime;
+}
+
+
+
+
+
