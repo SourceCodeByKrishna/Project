@@ -40,17 +40,15 @@ void main()
 
 void Options()
 {
-	int Exit = 1;
-	int Option;
-	while(Exit!=0)
+	int Option=1;
+	int Log=0;
+	while(Option!=0)
 	{
-		Exit = 0;
-		int Log=0;
 		printf("\n Do you want to");
 		printf("\n \t 1. Register");
 		printf("\n \t 2. Login");
+		printf("\n \t 0. Exit");
 		scanf("%d",&Option);
-		Exit = Option;
 		switch(Option)
 		{
 			case 1:
@@ -129,8 +127,7 @@ int MenuOptions()
 	printf("\n 1. Product");
 	printf("\n 2. Sale");
 	printf("\n 3. Get the Sale Report");
-	printf("\n 4. Get the Product Report");
-	printf("\n 0. Exit");
+	printf("\n 4. Get the Product Report \n");
 	scanf("%d", &Option);
 	return Option;	
 }
@@ -162,7 +159,7 @@ int ProductOptions()
 	printf("\n 1. Add a product");
 	printf("\n 2. Update a product");
 	printf("\n 3. Display the Product");
-	printf("\n 4. Delete a product");
+	printf("\n 4. Delete a product \n");
 	scanf("%d",&Option);
 	return Option;
 }
@@ -209,10 +206,36 @@ void AddProduct()
 //Update Product
 void UpdateProduct()
 {
+	int ID, Quantity,Update=0;
 	printf("\n Enter the ID of product you want to update: 101(let)");
-	printf("\n Enter new name:");
-	printf("\n Enter description:");
+	scanf("%d", &ID);
 	printf("\n Enter Quantity:");
+	scanf("%d", &Quantity);
+	struct Products *Temp;
+		Temp = Head;
+		  while(Temp!= NULL)
+		 {
+		 		if(Temp->ID==ID)
+		 		{
+		 			if(Quantity!=0)
+		 			{
+		 			Temp->Quantity = Quantity;
+		 			Update=1;
+		 			}
+		 			
+		 		}
+		    Temp=Temp->Next;
+		 }
+		 if(Update==1)
+		 {
+		 printf("\n Successfully Updated...");
+		 }
+		 else
+		 {
+		 printf("\n Failed to Updated...");
+		 }
+
+	return;
 }
 
 //Show Product
