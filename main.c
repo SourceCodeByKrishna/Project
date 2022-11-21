@@ -1,14 +1,15 @@
 #include<stdio.h>
 #include<malloc.h>
+#include<string.h>
 struct Products
 {
 	int ID;
-	char *Name;
-	char *Description;
+	char Name[50];
+	char Description[50];
 	int Quantity;
 	struct Products *Next;
 };
-
+struct Products *Head;
 void Display();
 void Register();
 int Login();
@@ -173,23 +174,24 @@ void AddProduct()
 	printf("\n Enter description:");
 	scanf("%s",Description);
 	printf("\n Enter Quantity:");
-	scanf("%s",&Quantity);
-	struct Products *P = NewData(ID,NAME,Description,Quantity);
-	SaveToProductFile(P);
-	DisplayProducts(P);
+	scanf("%d",&Quantity);
+	//struct Products *P = NewData(ID,NAME,Description,Quantity);
+	//SaveToProductFile(P);
+	//DisplayProducts(P);
 }
 
+/*
 struct Products* NewData(int ID, char* NAME, char* Description, int Quantity)
 {
 	struct Products* P = (struct Products*)malloc(sizeof(struct Products));
 	P->ID=ID;
-	P->Name=NAME;
+	P->Name=Name;
 	P->Description=Description;
 	P->Quantity=Quantity;
 	P->Next=NULL;
 	return P;
 }
-
+*/
 //Update Product
 void UpdateProduct()
 {
@@ -223,8 +225,8 @@ void DeleteProduct()
 //Sales
 void Sale()
 {
-	int Option = SaleOptions();
-	switch(Option)
+	//int Option = SaleOptions();
+	switch(1)
 	{
 		case 1: MakeSale();
 		break;
@@ -281,6 +283,7 @@ void SaveToProductFile(struct Products* P)
 		P=P->Next;
 	}
   
+  
   fclose(W);
 }
 
@@ -288,37 +291,52 @@ void LoadProductFile()
 {
 	int ID, Quantity;
 	char Name[50], Description[50];
-	struct Products* Head;
 	FILE *R = fopen("Products.txt","r");
 	while(fscanf(R,"%d %s %s %d",&ID,Name,Description,&Quantity)!=EOF)
 	{
 		//printf("\n %d %s %s %d",ID,Name,Description,Quantity);
-		struct Products* P = (struct Products*)malloc(sizeof(struct Products));
-		P->ID=ID;
-		P->Name=Name;
-		P->Description=Description;
-		P->Quantity=Quantity;
-		P->Next=NULL;
-		if(Head==NULL)
+		//char NM[50] = Name;
+		//printf("\n NAME: %s",NM);
+		
+		struct Products *D = (struct Products*)malloc(sizeof(struct Products));
+ 		D->ID= ID;
+ 		strcpy(D->Name, Name);
+ 		strcpy(D->Description,Description);
+ 		D->Quantity= Quantity;
+ 		D->Next=NULL;
+ 		if(Head==NULL)
 		{
-		Head = P;
+		  Head=D;
 		}
 		else
 		{
-		    while(Head->Next!=NULL)
-		    {
-		    Head=Head->Next;
-		    }
-		    Head->Next = P;
-		}
-	
-	}
-	while(Head!=NULL)
-	{
-	printf("%d %s",Head->ID, Head->Name);
-	Head=Head->Next;
+		 struct Products *Temp;
+		 Temp = Head;
+		  while(Temp->Next!=NULL)
+		  {
+		  Temp=Temp->Next;
+		  }
+		  Temp->Next=D;
+		}	
 	}
 	
+	if(Head==NULL)
+	 {
+	 printf("\n Empty");
+	 }
+	 else
+	 {
+	  struct Products *Temp;
+	  Temp = Head;
+	   while(Temp!=NULL)
+	   {
+	   printf("\n \t%d ",Temp->ID);
+	   printf("%s \t",Temp->Name);
+	   printf("%s \t",Temp->Description);
+	   printf("\t %d",Temp->Quantity);
+	   Temp=Temp->Next;
+	   }
+	 }
 	
 	fclose(R);
 }
