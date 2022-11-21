@@ -40,9 +40,9 @@ void main()
 
 void Options()
 {
-	int Option=1;
+	int Option;
 	int Log=0;
-	while(Option!=0)
+	do
 	{
 		printf("\n Do you want to");
 		printf("\n \t 1. Register");
@@ -66,7 +66,7 @@ void Options()
 			default: printf("Invalid");
 			break;
 		}
-	}
+	}while(Option!=0);
 	
 }
 
@@ -200,7 +200,7 @@ void AddProduct()
 		  }
 		  Temp->Next=D;
 		}	
-	printf("\n Successfully Product Added \n");
+	ShowProducts();
 }
 
 //Update Product
