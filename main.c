@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<malloc.h>
 #include<string.h>
+#include<time.h>
 struct Products
 {
 	int ID;
@@ -9,7 +10,15 @@ struct Products
 	int Quantity;
 	struct Products *Next;
 };
+
+struct Sales
+{
+	int  SaleID;
+	int  Quantity;
+	struct Sales *Next;
+};
 struct Products *Head;
+struct Sales *SalesHead;
 void Options();
 void Register();
 int Login();
@@ -28,6 +37,8 @@ void ProductReport();
 void SalesReport();
 void UpdateProductFile();
 void LoadProductFile();
+void UpdateSalesFile();
+char *JoinStrings(char [],char []);
 
 void main()
 {
@@ -35,6 +46,7 @@ void main()
 	LoadProductFile();
 	Options();
 	UpdateProductFile();
+	UpdateSalesFile();
 	return;
 }
 
@@ -337,8 +349,62 @@ int SaleOptions()
 //MakeSale
 void MakeSale()
 {
+	int ID, Quantity;
+	//time_t t = time(NULL);
+  //struct tm tm = *localtime(&t);
+  //printf("Date and time: %d-%02d-%02d %02d:%02d:%02d\n",tm.tm_mday, tm.tm_mon + 1,tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec);
 	printf("\n Enter Product ID:");
+	scanf("%d",&ID);
 	printf("\n Enter Quantity:");
+	scanf("%d",&Quantity);
+	
+	if(Head==NULL)
+	 {
+	 printf("\n Empty");
+	 }
+	 else
+	 {
+	  struct Products *Temp;
+	  Temp = Head;
+	   while(Temp!= NULL)
+	   {
+		 struct Sales *SalesTemp;
+		 SalesTemp = SalesHead;
+		 if(Temp->ID==ID)
+		 {
+		   Temp->Quantity=Temp->Quantity - Quantity; //Decrement The Quantity
+		   struct Sales *D = (struct Sales*)malloc(sizeof(struct Sales));
+		   D->SaleID= ID*10; //Sale ID
+		   D->Quantity= Quantity; //Sale Quantity
+		   char StrQuant[10];
+		   char StrID[10];
+		   sprintf(StrID, "%d", ID);//Converts int to String
+		   sprintf(StrQuant, "%d", Quantity);//Converts int to String
+		   char *NewString;
+		   //strcpy(Order,StrQuant);
+		   NewString = JoinStrings(StrID,StrQuant);//Joing Strings with < , >
+		   char String[50];
+		   strcpy(String, NewString);
+		   printf("\n New String: %s", String);
+		   D->Next=NULL;
+			if(SalesHead==NULL)
+			{
+			 SalesHead = D;		 				
+			}
+			else
+			{
+			  while(SalesTemp!=NULL)
+			  {
+				SalesTemp = SalesTemp->Next;
+			  }
+		          SalesTemp->Next= D;
+			}
+		 			
+		 }
+		    Temp=Temp->Next;
+	    }
+	 }
+	
 }
 
 //Display
@@ -417,4 +483,52 @@ void LoadProductFile()
 	}
 	
 	fclose(R);
+}
+
+//Update Sales File
+void UpdateSalesFile()
+{
+	FILE *W = fopen("Sales.txt","w");
+	if(SalesHead==NULL)
+	 {
+	 printf("\n Empty");
+	 }
+	 else
+	 {
+	  struct Sales *Temp;
+	  Temp = SalesHead;
+	   while(Temp!=NULL)
+	   {
+		 fprintf(W,"%d %d\n",Temp->SaleID,Temp->Quantity); 
+	         Temp=Temp->Next;
+	   }
+	 }
+	fclose(W);
+}
+
+char *JoinStrings(char String1[15],char String2[15])
+{
+	int i=0,j=1;
+	char *STR =  (char *)malloc(sizeof(30));
+	STR[0] = '<';
+	
+	while (String1[i] != '\0')// Insert First String
+	{
+        STR[j] = String1[i];
+        i++;
+        j++;
+    	}
+    
+    i = 0;
+    STR[j]=',';
+    j++;
+    while (String2[i] != '\0') {
+        STR[j] = String2[i];
+        i++;
+        j++;
+    }
+    	STR[j] = '>';
+    	j++;
+	STR[j] = '\0';
+	return STR;
 }
