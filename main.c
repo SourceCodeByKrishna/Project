@@ -34,8 +34,11 @@ void main()
 	
 	LoadProductFile();
   DisplayProducts();
-	AddProduct();
-	UpdateProductFile();
+  DeleteProduct();
+  UpdateProductFile();
+  DisplayProducts();
+	//AddProduct();
+	
 //	Display();
 	return;
 }
@@ -236,8 +239,48 @@ void DisplayProducts()
 //Delete Product
 void DeleteProduct()
 {
+	int ID;
 	printf("\n Enter the ID of product you want to delete:");
-	printf("\n Product is deleted!!");
+	scanf("\n%d",&ID);
+	if(Head==NULL)
+	{
+		  printf("\nEmpty..");
+	}
+	else
+	{
+		int firstNode = 0; 
+		struct Products *Temp, *Current;
+		Temp = Head;
+		  while((Temp->Next != NULL) && (Temp->ID != ID))
+		 {
+		 		firstNode++;
+		 		Current = Temp;
+		    Temp=Temp->Next;
+		 }
+		 if(firstNode==0)
+		 {
+		 		Temp = Head;
+		 		Head = Head->Next;
+		 		free(Temp);
+		 		printf("\n Deleted Successfully"); 
+		 }
+		 else
+		 {
+		 	if(Temp->ID == ID)  
+      {  
+            Current->Next = Temp->Next;  
+            free(Temp);  
+            printf("\n Deleted Successfully");  
+      }
+      else
+      {
+      	printf("\n Not Found");
+      }
+		 }
+		 
+		 
+	}	
+	
 }
 
 //Sales Part
@@ -305,13 +348,15 @@ void UpdateProductFile()
 	  Temp = Head;
 	   while(Temp!=NULL)
 	   {
-		 fprintf(W,"\n%d %s %s %d",Temp->ID, Temp->Name, Temp->Description, Temp->Quantity); 
+		 fprintf(W,"%d %s %s %d\n",Temp->ID, Temp->Name, Temp->Description, Temp->Quantity); 
 	   Temp=Temp->Next;
 	   }
 	 }
 	fclose(W);
 }
 
+
+//Loads Products File
 void LoadProductFile()
 {
 	int ID, Quantity;
