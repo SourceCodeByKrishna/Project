@@ -19,22 +19,23 @@ void Product();
 int ProductDisplay();
 void AddProduct();
 void UpdateProduct();
-void DisplayProducts(struct Products* P);
+void DisplayProducts();
 void DeleteProduct();
 void Sale();
 void MakeSale();
 void SaleDisplay();
 void ProductReport();
 void SalesReport();
-struct Products* NewData(int , char* , char* , int);
-void SaveToProductFile(struct Products* P);
+void UpdateProductFile();
 void LoadProductFile();
 
 void main()
 {
 	
-//	AddProduct();
 	LoadProductFile();
+  DisplayProducts();
+	AddProduct();
+	UpdateProductFile();
 //	Display();
 	return;
 }
@@ -166,32 +167,40 @@ int ProductDisplay()
 void AddProduct()
 {
 	int ID, Quantity;
-	char NAME[50], Description[50];
+	char Name[50], Description[50];
 	printf("\n Enter product ID:");
 	scanf("%d",&ID);
 	printf("\n Enter new name:");
-	scanf("%s",NAME);
+	scanf("%s",Name);
 	printf("\n Enter description:");
 	scanf("%s",Description);
 	printf("\n Enter Quantity:");
 	scanf("%d",&Quantity);
-	//struct Products *P = NewData(ID,NAME,Description,Quantity);
-	//SaveToProductFile(P);
-	//DisplayProducts(P);
+	
+	struct Products *D = (struct Products*)malloc(sizeof(struct Products));
+ 		D->ID= ID;
+ 		strcpy(D->Name, Name);
+ 		strcpy(D->Description,Description);
+ 		D->Quantity= Quantity;
+ 		D->Next=NULL;
+	
+	if(Head==NULL)
+		{
+		  Head=D;
+		}
+		else
+		{
+		 struct Products *Temp;
+		 Temp = Head;
+		  while(Temp->Next!=NULL)
+		  {
+		  Temp=Temp->Next;
+		  }
+		  Temp->Next=D;
+		}	
+	DisplayProducts();
 }
 
-/*
-struct Products* NewData(int ID, char* NAME, char* Description, int Quantity)
-{
-	struct Products* P = (struct Products*)malloc(sizeof(struct Products));
-	P->ID=ID;
-	P->Name=Name;
-	P->Description=Description;
-	P->Quantity=Quantity;
-	P->Next=NULL;
-	return P;
-}
-*/
 //Update Product
 void UpdateProduct()
 {
@@ -202,14 +211,25 @@ void UpdateProduct()
 }
 
 //Display Product
-void DisplayProducts(struct Products* P)
+void DisplayProducts()
 {
-	while(P!=NULL)
-	{
-		printf("\n %d",P->ID);
-		printf("\n %s",P->Name);
-		P=P->Next;
-	}
+	if(Head==NULL)
+	 {
+	 printf("\n Empty");
+	 }
+	 else
+	 {
+	  struct Products *Temp;
+	  Temp = Head;
+	   while(Temp!=NULL)
+	   {
+	   printf("\n \t%d ",Temp->ID);
+	   printf("%s \t",Temp->Name);
+	   printf("%s \t",Temp->Description);
+	   printf("\t %d",Temp->Quantity);
+	   Temp=Temp->Next;
+	   }
+	 }
 	
 }
 
@@ -271,20 +291,25 @@ void SalesReport()
 
 
 //FILES
-void SaveToProductFile(struct Products* P)
+void UpdateProductFile()
 {
-  int ID;
-  char NAME[50];
-  FILE *W = fopen("Products.txt","w");
-  
-  while(P!=NULL)
-	{
-		fprintf(W,"%d %s %s %d",P->ID, P->Name, P->Description, P->Quantity); 
-		P=P->Next;
-	}
-  
-  
-  fclose(W);
+
+	FILE *W = fopen("Products.txt","w");
+	if(Head==NULL)
+	 {
+	 printf("\n Empty");
+	 }
+	 else
+	 {
+	  struct Products *Temp;
+	  Temp = Head;
+	   while(Temp!=NULL)
+	   {
+		 fprintf(W,"\n%d %s %s %d",Temp->ID, Temp->Name, Temp->Description, Temp->Quantity); 
+	   Temp=Temp->Next;
+	   }
+	 }
+	fclose(W);
 }
 
 void LoadProductFile()
@@ -319,24 +344,6 @@ void LoadProductFile()
 		  Temp->Next=D;
 		}	
 	}
-	
-	if(Head==NULL)
-	 {
-	 printf("\n Empty");
-	 }
-	 else
-	 {
-	  struct Products *Temp;
-	  Temp = Head;
-	   while(Temp!=NULL)
-	   {
-	   printf("\n \t%d ",Temp->ID);
-	   printf("%s \t",Temp->Name);
-	   printf("%s \t",Temp->Description);
-	   printf("\t %d",Temp->Quantity);
-	   Temp=Temp->Next;
-	   }
-	 }
 	
 	fclose(R);
 }
