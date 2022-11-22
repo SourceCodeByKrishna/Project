@@ -118,9 +118,9 @@ int Login()
 //Menu
 void Menu()
 {
-	int Option = 1;
-	while(Option!=0)
-	{
+	int Option;
+	
+	do{
 		Option = MenuOptions();
 		switch(Option)
 		{
@@ -132,9 +132,13 @@ void Menu()
 			break;
 			case 4: SalesReport();
 			break;
+			case 0: return;
+			default: printf("\n Invalid Option \n");
+			break;
 		}
-	}
+	}while(Option!=0);
 	
+	return;
 }
 
 //Menu Display
@@ -409,7 +413,7 @@ void MakeSale()
 	
 	SalesNode->SaleID = ID *10;
 	SalesNode->NoItems = NoSales;
-	strcpy(SalesNode->DateTime,DATETIME);
+	//strcpy(SalesNode->DateTime,DATETIME);
 	
 
 	while(i<count)
