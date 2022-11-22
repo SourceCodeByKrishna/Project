@@ -59,25 +59,17 @@ void main()
 void Options()
 {
 	int Option;
-	int Log=0;
 	do
 	{
-		printf("\n Do you want to");
 		printf("\n \t 1. Register");
 		printf("\n \t 2. Login");
 		printf("\n \t 0. Exit");
 		scanf("%d",&Option);
 		switch(Option)
 		{
-			case 1:
-				Register();
+			case 1: Register();
 			break;
-			case 2:
-				Log = Login();
-				if(Log==1)
-					Menu();
-				else
-					printf("\n Please try again...");
+			case 2: Menu();
 			break;
 			case 0: return;
 			break;
@@ -145,11 +137,12 @@ void Menu()
 int MenuOptions()
 {
 	int Option;
-	printf("\n ###########INVENTORY CONTROL###########");
+	printf("\n ###########INVENTORY CONTROL###########\n");
 	printf("\n 1. Product");
 	printf("\n 2. Sale");
 	printf("\n 3. Get the Sale Report");
-	printf("\n 4. Get the Product Report \n");
+	printf("\n 4. Get the Product Report");
+	printf("\n 0. Go to back...\n");
 	scanf("%d", &Option);
 	return Option;	
 }
@@ -351,7 +344,7 @@ int SaleOptions()
 {
 	int Options;
 	printf("\n 1. Make sale");
-	printf("\n 2. Display");
+	printf("\n 2. Display\n");
 	scanf("%d", &Options);
 	return Options;
 }
@@ -371,7 +364,7 @@ void MakeSale()
         printf("\n Enter Quantity:");
 	scanf("%d",&Quantity);
 	EffectProducts(ID,Quantity);
-	NoSales++;
+	NoSales++;//Number of Sales
 	char StrQuant[10];
 	char StrID[10];
 	sprintf(StrID, "%d", ID);//Converts int to String
@@ -380,7 +373,6 @@ void MakeSale()
 	NewString = JoinStrings(StrID,StrQuant);//Joing Strings with < , >
 	char String[50];
 	strcpy(String, NewString); //Copies pointer value to string
-	printf("%s",String);
 	int i=0;
 	while(String[i]!='\0')
 	{
@@ -389,20 +381,10 @@ void MakeSale()
 	}
 	Cart[count][i]='\0'; // '\0' Denotes ending of individual String
 	count++; 
-	printf("\n Enter 1 to c \n");
+	printf("\n Enter any except 0 to continue \n");
 	scanf("%d",&Exit);
 	}while(Exit!=0);
-	
-	
-	//printing Cart Data
-	int j=0;
-	while(j<count)
-	{
-	  printf("%s",Cart[j]);
-	  j++;
-	}
-	
-	
+		
 	//Save to Sales Linked List
 	int i=0;
 	char *DT = GetTime();
@@ -413,14 +395,16 @@ void MakeSale()
 	
 	SalesNode->SaleID = ID *10;
 	SalesNode->NoItems = NoSales;
-	//strcpy(SalesNode->DateTime,DATETIME);
+	SalesNode->Next = NULL;
+	strcpy(SalesNode->DateTime,DATETIME);
 	
-
+	//Save Items to Cart
 	while(i<count)
 	{
 	  strcpy(SalesNode->Cart[i],Cart[i]);
 	  i++;
 	}
+	
 	
 	if(SalesHead==NULL)
 	{
@@ -436,7 +420,7 @@ void MakeSale()
          }
 	  SalesTemp->Next=SalesNode;
 	}
-	
+
 	return;
 }
 
@@ -479,7 +463,7 @@ void SaleDisplay()
 	  SalesTemp = SalesHead;
 	   while(SalesTemp!=NULL)
 	   {
-	   printf("%d\n %s",SalesTemp->SaleID, SalesTemp->DateTime);
+	   printf("%d\n",SalesTemp->SaleID);
 
 	   int i=0;
 	   while(i<SalesTemp->NoItems)
@@ -584,14 +568,14 @@ void UpdateSalesFile()
 	  SalesTemp = SalesHead;
 	   while(SalesTemp!=NULL)
 	   {
-	   fprintf(A,"%d ",SalesTemp->SaleID);
+	   fprintf(A,"%d %s ",SalesTemp->SaleID, SalesTemp->DateTime);
 	   int i=0;
 	   	while(i<SalesTemp->NoItems)
 	   	{
 	   	fprintf(A,"%s  ",SalesTemp->Cart[i]);
 	   	i++;
 	   	}
-	   	fprintf(A,"\n");
+	   	fprintf(A,"\n");//Creates New Line
 	         SalesTemp=SalesTemp->Next;
 	   }
 	 }
@@ -727,8 +711,5 @@ char* GetTime()
   
   return DateTime;
 }
-
-
-
 
 
