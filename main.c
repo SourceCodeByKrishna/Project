@@ -2,6 +2,7 @@
 #include<malloc.h>
 #include<string.h>
 #include<time.h>
+#include<stdlib.h>
 struct Products
 {
 	int ID;
@@ -45,14 +46,16 @@ void UpdateSalesFile();
 void EffectProducts(int, int);
 char *JoinStrings(char [],char []);
 char *GetTime();
+int GenerateID();
 
 void main()
 {
-	
-	LoadProductFile();
+
+	LoadProductFile(); //Loads Product File Data in to Linked List
 	Options();
-	UpdateProductFile();
+	UpdateProductFile();//Loads Linked List Data in to Product File
 	UpdateSalesFile();
+	
 	return;
 }
 
@@ -201,14 +204,14 @@ void AddProduct()
  		D->Quantity= Quantity;
  		D->Next=NULL;
 	
-	if(Head==NULL)
+    	if(Head==NULL)
 		{
 		  Head=D;
 		}
 		else
 		{
 		 struct Products *Temp;
-		 Temp = Head;
+		 Temp = Head; 
 		  while(Temp->Next!=NULL)
 		  {
 		  Temp=Temp->Next;
@@ -283,11 +286,11 @@ void DeleteProduct()
 	printf("\n ############DELETE PRODUCT##############");
 	printf("\n Enter the ID of product you want to delete:");
 	scanf("\n%d",&ID);
-	if(Head==NULL)
+	if(Head==NULL) //if data not exists
 	{
 		  printf("\nEmpty..");
 	}
-	else
+	else //if data exists
 	{
 		int firstNode = 0; 
 		struct Products *Temp, *Current;
@@ -393,7 +396,8 @@ void MakeSale()
 	
 	struct Sales *SalesNode = (struct Sales*)malloc(sizeof(struct Sales));
 	
-	SalesNode->SaleID = ID *10;
+	SalesNode->SaleID = GenerateID();
+	GenerateID();
 	SalesNode->NoItems = NoSales;
 	SalesNode->Next = NULL;
 	strcpy(SalesNode->DateTime,DATETIME);
@@ -422,6 +426,40 @@ void MakeSale()
 	}
 
 	return;
+}
+
+//Generates Sale ID
+int GenerateID()
+{
+	int SID;
+	char C[1000];
+	char ID[10];
+	FILE *R = fopen("Sales.txt","r");
+	if(R == NULL)
+	printf("\n Unable to Open\n");
+	int Fresh = 0;
+	while(fscanf(R," %[^\n]",C)!=EOF)
+	{
+		 Fresh++;
+		 int i=0;
+		 while(C[i]!=' ')
+		 {
+		 ID[i] = C[i];
+		 i++;
+		 }
+		 ID[i]='\0';
+	}
+	
+	
+	if(Fresh==0)
+	SID = 1000;
+	else
+	{
+	SID = atoi(ID);
+	SID = SID +1;
+	}
+	fclose(R);
+	return SID;
 }
 
 void EffectProducts(int ID, int Quantity)
@@ -510,7 +548,7 @@ void UpdateProductFile()
 	   while(Temp!=NULL)
 	   {
 		 fprintf(W,"%d %s %s %d\n",Temp->ID, Temp->Name, Temp->Description, Temp->Quantity); 
-	   Temp=Temp->Next;
+	     Temp=Temp->Next;
 	   }
 	 }
 	fclose(W);
@@ -525,10 +563,7 @@ void LoadProductFile()
 	FILE *R = fopen("Products.txt","r");
 	while(fscanf(R,"%d %s %s %d",&ID,Name,Description,&Quantity)!=EOF)
 	{
-		//printf("\n %d %s %s %d",ID,Name,Description,Quantity);
-		//char NM[50] = Name;
-		//printf("\n NAME: %s",NM);
-		
+	
 		struct Products *D = (struct Products*)malloc(sizeof(struct Products));
  		D->ID= ID;
  		strcpy(D->Name, Name);
