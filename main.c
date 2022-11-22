@@ -493,12 +493,15 @@ void SaleDisplay()
 
 void ProductReport()
 {
-	printf("\n Product Report");
+	printf("\n #########Product Report#############\n");
+	ShowProducts();
 }
 
 void SalesReport()
 {
-	printf("\n Sales Report");
+	printf("\n ############Sales Report#############");
+	SaleDisplay();
+	
 }
 
 
@@ -577,7 +580,7 @@ void UpdateSalesFile()
 	  SalesTemp = SalesHead;
 	   while(SalesTemp!=NULL)
 	   {
-	   fprintf(A,"%d\t %s",SalesTemp->SaleID, SalesTemp->DateTime);
+	   fprintf(A,"%d ",SalesTemp->SaleID);
 	   int i=0;
 	   	while(i<SalesTemp->NoItems)
 	   	{
