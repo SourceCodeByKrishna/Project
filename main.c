@@ -24,7 +24,7 @@ struct Products *Head;
 struct Sales *SalesHead;
 
 void Options();
-void Register();
+int Register();
 int  Login();
 void Menu();
 int  MenuOptions();
@@ -55,13 +55,16 @@ void main()
 	Options();
 	UpdateProductFile();//Loads Linked List Data in to Product File
 	UpdateSalesFile();
-	
 	return;
 }
+
+
 
 void Options()
 {
 	int Option;
+	int LogStatus;
+	int RStatus;
 	do
 	{
 		printf("\n \t 1. Register");
@@ -70,9 +73,25 @@ void Options()
 		scanf("%d",&Option);
 		switch(Option)
 		{
-			case 1: Register();
+			case 1: 
+			RStatus = Register();
+			if(RStatus == 1)
+			printf("\n Registration Successfull\n");
+			else
+			printf("\n Registration Failed \n");
 			break;
-			case 2: Menu();
+			case 2:
+			LogStatus = Login();
+			if(LogStatus==1)
+			{
+			printf("\n Login Successfull\n");
+			Menu();
+			}
+			else
+			{
+			printf("\n Login was Successfull\n");
+			printf("\n please try again..\n");
+			}
 			break;
 			case 0: return;
 			break;
@@ -84,30 +103,52 @@ void Options()
 }
 
 //Register
-void Register()
+int Register()
 {
-	int ID;
-	int PASSWORD;
-	int REENTRY;
+	char USERID[20];
+	char PASSWORD[20];
+	char REENTRY[20];
 	printf("\n Enter Your ID:");
-	scanf("%d",&ID);
+	scanf("%s",USERID);
 	printf("\n Enter Your Password");
-	scanf("%d", &PASSWORD);
+	scanf("%s", PASSWORD);
 	printf("\n Re-enter Your Password");
-	scanf("%d", &REENTRY);
-	return;
+	scanf("%s", REENTRY);
+	if(strcmp(PASSWORD,REENTRY)==0)
+	{
+	  FILE *Users = fopen("Users.txt","a");
+	  fprintf(Users,"%s %s\n",USERID,PASSWORD);
+	  fclose(Users);
+	  return 1;
+	}
+	return 0;
 }
 
 //Login
 int Login()
 {
-	int ID;
-	int PASSWORD;
+	char USERID[50];
+	char PASSWORD[50];
+	
+	char UID[50];
+	char UPASS[50];
+	
 	printf("\n Enter Your ID:");
-	scanf("%d",&ID);
+	scanf("%s",UID);
 	printf("\n Enter Your Password");
-	scanf("%d", &PASSWORD);
-	return 1;
+	scanf("%s", UPASS);
+	
+	FILE *Users = fopen("Users.txt","r");
+	while(fscanf(Users,"%s %s",USERID,PASSWORD)!=EOF)
+	{
+	  if(strcmp(UID,USERID)==0 && strcmp(UPASS,PASSWORD)==0)
+	  {
+	  return 1;
+	  fclose(Users);
+	  }
+	}
+	fclose(Users);
+	return 0;
 }
 
 //Menu
